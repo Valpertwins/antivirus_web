@@ -1,1 +1,589 @@
-# antivirus_web
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SecureGuard - Protección digital confiable</title>
+  <style>
+    :root{
+      --bg-1:#071022;
+      --bg-2:#0f2636;
+      --card:#0f1724;
+      --muted:#98a0b3;
+      --accent-purple:#7c5cf6;
+      --accent-blue:#2f7be9;
+      --accent-orange:#ff9a3c;
+      --success:#38b784;
+      --glass-opacity: 0.12;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:
+        radial-gradient(900px 480px at 10% 10%, rgba(124,92,246,0.06), transparent 8%),
+        linear-gradient(180deg,var(--bg-1),var(--bg-2));
+      color:#e6eef8;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding-bottom:60px;
+    }
+
+    /* header */
+    header{
+      padding:14px 24px;
+      display:flex; align-items:center; justify-content:space-between;
+      position:sticky; top:0; z-index:60;
+      background: linear-gradient(180deg, rgba(11,18,32,0.22), rgba(11,18,32,0.04));
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid rgba(255,255,255,0.02);
+    }
+    .brand{display:flex; gap:12px; align-items:center;}
+    .logo-badge{
+      width:44px; height:44px; border-radius:10px;
+      background: linear-gradient(135deg,var(--accent-blue), var(--accent-purple));
+      display:flex; align-items:center; justify-content:center; font-weight:800;
+      box-shadow: 0 8px 30px rgba(15,39,70,0.45);
+    }
+    .title{font-size:1.05rem; font-weight:700}
+    .subtitle{font-size:0.78rem; color:var(--muted); margin-top:2px}
+
+    .nav-right{display:flex; align-items:center; gap:12px}
+    .cart-btn{
+      background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.03);
+      color: #e6eef8; padding:8px 14px; border-radius:10px; cursor:pointer;
+      display:flex; gap:10px; align-items:center;
+      transition: transform .14s ease, box-shadow .14s ease;
+    }
+    .cart-btn:hover{ transform: translateY(-3px); box-shadow: 0 10px 30px rgba(15,39,70,0.5); }
+    .cart-count{
+      background:var(--accent-purple); color:white; padding:4px 8px; border-radius:999px;
+      font-weight:700; font-size:0.85rem;
+    }
+
+    /* hero */
+    .hero{
+      padding:64px 20px 28px; text-align:center; max-width:1100px; margin:0 auto;
+    }
+    .hero h1{
+      font-size:2.6rem; line-height:1.02; margin-bottom:12px; font-weight:800;
+    }
+    .hero p{ color:var(--muted); font-size:1rem; margin-bottom:28px; max-width:780px; margin-left:auto; margin-right:auto }
+
+    /* plans */
+    .plans-wrap{ max-width:1200px; margin:0 auto; padding:0 20px 40px }
+    .plans-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap:22px }
+
+    .plan{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:14px; padding:28px; border:1px solid rgba(255,255,255,0.03);
+      position:relative; overflow:visible; transition: transform .18s ease, box-shadow .18s ease;
+      box-shadow: 0 8px 30px rgba(2,6,23,0.55);
+    }
+    .plan:hover{ transform: translateY(-6px); box-shadow: 0 18px 50px rgba(2,6,23,0.6); }
+    .plan.popular{ border: 1px solid rgba(124,92,246,0.18); transform: translateY(-6px) scale(1.02) }
+
+    .ribbon{
+      position:absolute; top:-10px; left:50%; transform:translateX(-50%);
+      background: linear-gradient(90deg,var(--accent-purple), #ff6fb5);
+      color:white; padding:8px 14px; border-radius:999px; font-weight:700; font-size:0.85rem;
+      box-shadow:0 8px 30px rgba(124,92,246,0.12);
+    }
+    .plan .icon{ width:56px; height:56px; border-radius:10px; display:flex; align-items:center; justify-content:center; margin-bottom:18px; font-weight:700 }
+    .plan.blue .icon{ background: linear-gradient(135deg, #2f7be9, #4ea2ff) }
+    .plan.purple .icon{ background: linear-gradient(135deg, #7c5cf6, #b46bff) }
+    .plan.orange .icon{ background: linear-gradient(135deg, #ff9a3c, #ff7a00) }
+
+    .plan h3{ font-size:1.25rem; margin-bottom:6px; color:#fff }
+    .stars{ color:#ffd166; font-weight:700; margin-bottom:8px; opacity:0.95 }
+    .price{ font-size:2rem; font-weight:800; margin:6px 0; color:#f7fbff }
+    .price small{ color:var(--muted); font-weight:600; margin-left:8px; font-size:0.9rem }
+
+    .features{ margin-top:12px; list-style:none; padding:0; color:#cfe7ff; font-size:0.95rem }
+    .features li{ padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.02); display:flex; gap:10px; align-items:flex-start }
+    .features li::before{ content:"✓"; color:var(--accent-blue); font-weight:700; margin-top:2px }
+
+    .cta{ margin-top:16px; display:flex; gap:12px; align-items:center }
+    .btn-cta{
+      flex:1; padding:12px 18px; border-radius:10px; border:none; cursor:pointer;
+      font-weight:800; font-size:1rem; box-shadow: 0 8px 24px rgba(2,6,23,0.6);
+      transition: transform .14s ease, box-shadow .14s ease, filter .14s ease;
+    }
+    .btn-cta:hover{ transform: translateY(-4px); filter:brightness(1.03) }
+    .btn-blue{ background: linear-gradient(90deg, var(--accent-blue), #2ea0ff); color: #021027 }
+    .btn-purple{ background: linear-gradient(90deg, var(--accent-purple), #b46bff); color: #021027 }
+    .btn-orange{ background: linear-gradient(90deg, var(--accent-orange), #ff7a00); color: #021027 }
+
+    footer{ max-width:1200px; margin:28px auto; color:var(--muted); text-align:center; padding:18px 20px }
+
+    /* MODAL (fondo con degradado morado-azul) */
+    .modal{
+      display:none; position:fixed; inset:0; z-index:120; align-items:center; justify-content:center;
+      background: radial-gradient(800px 400px at 10% 10%, rgba(124,92,246,0.08), transparent 8%),
+                  linear-gradient(180deg, rgba(11,16,30,0.6), rgba(7,16,34,0.85));
+      -webkit-backdrop-filter: blur(2px);
+      backdrop-filter: blur(2px);
+      padding:20px;
+      transition: opacity .24s ease;
+    }
+    .modal-inner{
+      width:96%; max-width:760px; border-radius:14px; padding:18px; color: #eaf3ff;
+      /* glass effect */
+      background: linear-gradient(180deg, rgba(255,255,255,var(--glass-opacity)), rgba(255,255,255,0.02));
+      backdrop-filter: blur(10px) saturate(120%);
+      border: 1px solid rgba(255,255,255,0.04);
+      box-shadow: 0 18px 60px rgba(2,6,23,0.7);
+      transform: translateY(18px) scale(.98);
+      opacity:0;
+      transition: transform .28s cubic-bezier(.2,.9,.3,1), opacity .22s ease, box-shadow .22s ease;
+      position:relative;
+      overflow:hidden;
+    }
+    .modal-inner.open{ transform: translateY(0) scale(1); opacity:1; }
+
+    /* modal header area */
+    .modal-inner h3{ margin-bottom:6px; font-size:1.25rem }
+    .cart-list{ max-height:320px; overflow:auto; margin-top:12px; padding-right:6px }
+    .cart-item{
+      display:flex; gap:12px; align-items:center; padding:12px; border-radius:10px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+      margin-bottom:10px; border:1px solid rgba(255,255,255,0.01);
+    }
+    .cart-item .meta{ flex:1 }
+    .qty-controls{ display:flex; gap:8px; align-items:center }
+    .qty-btn{
+      background:transparent; border:1px solid rgba(255,255,255,0.06); color:var(--muted);
+      padding:6px 10px; border-radius:8px; cursor:pointer; font-weight:800; transition: background .14s;
+    }
+    .qty-btn:hover{ background: rgba(255,255,255,0.02) }
+
+    .remove-small{
+      background:transparent; border:1px solid rgba(229,62,62,0.14); color:#ff9b9b;
+      padding:6px 8px; border-radius:8px; cursor:pointer;
+    }
+
+    .total-row{ display:flex; justify-content:space-between; align-items:center; margin-top:12px; font-weight:800; font-size:1.05rem }
+
+    /* Checkout area */
+    .payment-methods{ display:flex; gap:12px; margin-top:12px }
+    .payment-method{
+      flex:1; border-radius:10px; padding:12px; cursor:pointer; border:1px solid rgba(255,255,255,0.02);
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+      display:flex; align-items:center; gap:12px; transition: all .18s ease;
+    }
+    .payment-method img{ width:48px; height:auto; display:block; border-radius:6px }
+    .payment-method .pm-extra{ margin-top:8px; transition: all .18s ease; opacity:0; height:0; overflow:hidden; }
+    .payment-method.selected{ border-color: rgba(124,92,246,0.22); box-shadow: 0 10px 30px rgba(124,92,246,0.04); transform: translateY(-6px) }
+    .payment-method.selected .pm-extra{ opacity:1; height:auto; }
+
+    /* inputs */
+    .input{
+      width:100%; padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.05);
+      background: rgba(255,255,255,0.02); color: #eaf3ff; margin-top:8px; transition: box-shadow .14s, border-color .14s;
+    }
+    .input:focus{ outline:none; box-shadow: 0 6px 26px rgba(124,92,246,0.08); border-color: rgba(124,92,246,0.28) }
+
+    /* confirm button */
+    .confirm-btn{
+      padding:12px 18px; border-radius:12px; border:none; cursor:pointer; font-weight:800;
+      background: linear-gradient(90deg,var(--accent-purple), var(--accent-blue)); color:#021027;
+      box-shadow: 0 10px 30px rgba(124,92,246,0.16); transition: transform .12s ease, filter .12s;
+    }
+    .confirm-btn:hover{ transform: translateY(-4px); filter:brightness(1.03) }
+
+    /* success animation */
+    .success-box{
+      display:flex; gap:12px; align-items:center; padding:12px; border-radius:10px;
+      background: linear-gradient(90deg, rgba(56,183,132,0.12), rgba(124,92,246,0.04));
+      animation: fadeInScale .38s cubic-bezier(.2,.9,.3,1);
+    }
+    @keyframes fadeInScale{
+      from{ opacity:0; transform: translateY(6px) scale(.98) }
+      to{ opacity:1; transform: translateY(0) scale(1) }
+    }
+
+    /* small screens */
+    @media (max-width:980px){
+      .plans-grid{ grid-template-columns: 1fr; }
+      .hero h1{ font-size:2rem }
+      header{ padding:12px 16px }
+      .payment-methods{ flex-direction:column }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo-badge">SG</div>
+      <div>
+        <div class="title">SecureGuard</div>
+        <div class="subtitle">Protección digital confiable</div>
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <button class="cart-btn" onclick="openCart()">
+        <span>🛒 Carrito</span>
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>Protege lo que más <span style="color:var(--accent-blue)">importa</span></h1>
+      <p>Seguridad de nivel empresarial para tu hogar y tu negocio. Protección en tiempo real, VPN y soporte prioritario para que tu información esté siempre segura.</p>
+    </section>
+
+    <section class="plans-wrap">
+      <div class="plans-grid" id="plansGrid">
+        <!-- Basic -->
+        <article class="plan blue" data-plan="SecureGuard Basic" data-price="29.99">
+          <div class="icon">🔰</div>
+          <h3>SecureGuard Basic</h3>
+          <div class="stars">★★★★☆ <span style="color:var(--muted); font-weight:600">(4.5)</span></div>
+          <div class="price">S/29.99 <small>/año</small></div>
+          <ul class="features">
+            <li>Protección en tiempo real</li>
+            <li>Antivirus y antimalware</li>
+            <li>Actualizaciones automáticas</li>
+            <li>Hasta 1 dispositivo</li>
+            <li>Soporte por email</li>
+          </ul>
+          <div class="cta">
+            <button class="btn-cta btn-blue" onclick="addToCart('SecureGuard Basic',29.99)">Agregar al carrito</button>
+          </div>
+        </article>
+
+        <!-- Plus -->
+        <article class="plan purple popular" data-plan="SecureGuard Plus" data-price="49.99">
+          <div class="ribbon">🔥 MÁS POPULAR</div>
+          <div class="icon">🛡️</div>
+          <h3>SecureGuard Plus</h3>
+          <div class="stars">★★★★★ <span style="color:var(--muted); font-weight:600">(4.8)</span></div>
+          <div class="price">S/49.99 <small>/año</small></div>
+          <ul class="features">
+            <li>Todo lo del Basic</li>
+            <li>Firewall avanzado</li>
+            <li>VPN incluida (500MB/día)</li>
+            <li>Control parental</li>
+            <li>Soporte 24/7</li>
+          </ul>
+          <div class="cta">
+            <button class="btn-cta btn-purple" onclick="addToCart('SecureGuard Plus',49.99)">Agregar al carrito</button>
+          </div>
+        </article>
+
+        <!-- Premium -->
+        <article class="plan orange" data-plan="SecureGuard Premium" data-price="79.99">
+          <div class="icon">🏆</div>
+          <h3>SecureGuard Premium</h3>
+          <div class="stars">★★★★★ <span style="color:var(--muted); font-weight:600">(5.0)</span></div>
+          <div class="price">S/79.99 <small>/año</small></div>
+          <ul class="features">
+            <li>Todo lo de Plus</li>
+            <li>VPN ilimitada</li>
+            <li>Gestor de contraseñas</li>
+            <li>Backup en la nube (50GB)</li>
+            <li>Soporte prioritario y gerente de cuenta</li>
+          </ul>
+          <div class="cta">
+            <button class="btn-cta btn-orange" onclick="addToCart('SecureGuard Premium',79.99)">Agregar al carrito</button>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div>© 2025 SecureGuard. Protegiendo tu mundo digital.</div>
+  </footer>
+
+  <!-- CART MODAL -->
+  <div class="modal" id="cartModal" onclick="modalOuterClick(event)">
+    <div class="modal-inner" id="cartInner" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
+      <h3>🛒 Mi carrito</h3>
+      <div id="cartList" class="cart-list"></div>
+
+      <div class="total-row" id="cartTotalRow" style="margin-top:10px">
+        <div>Total</div>
+        <div id="cartTotal">S/0.00</div>
+      </div>
+
+      <div style="display:flex; gap:10px; margin-top:14px;">
+        <button class="btn-cta btn-purple" style="flex:1" onclick="goToCheckout()">Proceder al pago</button>
+        <button class="qty-btn" style="flex:0" onclick="closeCart()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKOUT MODAL -->
+  <div class="modal" id="checkoutModal" onclick="modalOuterClick(event)">
+    <div class="modal-inner" id="checkoutInner" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
+      <h3>💳 Finalizar compra</h3>
+
+      <div id="checkoutSummary" style="margin-top:8px; color:var(--muted)"></div>
+
+      <div style="margin-top:12px">
+        <label style="font-weight:700; font-size:0.95rem">Nombre completo</label>
+        <input id="buyerName" class="input" placeholder="Juan Pérez" />
+      </div>
+
+      <div style="margin-top:8px">
+        <label style="font-weight:700; font-size:0.95rem">Email</label>
+        <input id="buyerEmail" class="input" type="email" placeholder="juan@ejemplo.com" />
+      </div>
+
+      <div style="margin-top:12px; font-weight:700">Método de pago</div>
+      <div class="payment-methods" id="paymentMethods">
+        <div class="payment-method selected" data-method="tarjeta" onclick="selectPM(this)">
+          <img src="visa.png" alt="Tarjeta" />
+          <div style="flex:1">
+            <div style="font-weight:800">Tarjeta</div>
+            <div style="color:var(--muted); font-size:0.85rem">Visa / MasterCard</div>
+            <div class="pm-extra" data-for="tarjeta">
+              <input id="cardNumber" class="input" placeholder="1234 5678 9012 3456" maxlength="19" />
+              <div style="display:flex; gap:8px; margin-top:8px">
+                <input id="cardExp" class="input" placeholder="MM/AA" style="flex:1" maxlength="5" />
+                <input id="cardCvv" class="input" placeholder="CVV" style="width:110px" maxlength="4" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="payment-method" data-method="yape" onclick="selectPM(this)">
+          <img src="yape.png" alt="Yape" />
+          <div style="flex:1">
+            <div style="font-weight:800">Yape</div>
+            <div style="color:var(--muted); font-size:0.85rem">Paga con tu número</div>
+            <div class="pm-extra" data-for="yape" style="display:none">
+              <input id="yapeNumber" class="input" placeholder="Ej: 9 999 999 99" />
+            </div>
+          </div>
+        </div>
+
+        <div class="payment-method" data-method="plin" onclick="selectPM(this)">
+          <img src="plin.png" alt="Plin" />
+          <div style="flex:1">
+            <div style="font-weight:800">Plin</div>
+            <div style="color:var(--muted); font-size:0.85rem">Paga con tu número</div>
+            <div class="pm-extra" data-for="plin" style="display:none">
+              <input id="plinNumber" class="input" placeholder="Ej: 9 999 999 99" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:14px; display:flex; gap:10px">
+        <button class="confirm-btn" style="flex:1" onclick="processPayment()">Confirmar pago</button>
+        <button class="qty-btn" style="align-self:flex-end" onclick="closeCheckout()">Cancelar</button>
+      </div>
+
+      <div id="checkoutResult" style="margin-top:12px"></div>
+    </div>
+  </div>
+
+  <script>
+    // Estado del carrito
+    let cart = [];
+
+    function formatMoney(n){ return 'S/' + n.toFixed(2); }
+
+    // Agregar producto
+    function addToCart(name, price){
+      const found = cart.find(i=>i.name===name);
+      if(found){ found.qty += 1; }
+      else { cart.push({name, price: Number(price), qty:1}); }
+      updateCartCount();
+      showNotification(`${name} agregado al carrito`);
+    }
+
+    function updateCartCount(){
+      const total = cart.reduce((s,i)=>s+i.qty,0);
+      document.getElementById('cartCount').textContent = total;
+    }
+
+    function showNotification(msg){
+      const n = document.createElement('div');
+      n.style.position='fixed'; n.style.right='18px'; n.style.top='86px';
+      n.style.background='var(--success)'; n.style.color='white'; n.style.padding='10px 14px';
+      n.style.borderRadius='10px'; n.style.boxShadow='0 8px 30px rgba(2,6,23,0.6)'; n.style.zIndex=220;
+      n.textContent=msg; document.body.appendChild(n);
+      setTimeout(()=>{ n.style.opacity='0'; n.style.transition='opacity .3s'; setTimeout(()=>n.remove(),350); },2000);
+    }
+
+    // abrir/cerrar carrito
+    function openCart(){
+      renderCart();
+      const modal = document.getElementById('cartModal');
+      modal.style.display='flex';
+      document.getElementById('cartInner').classList.add('open');
+      // focus trap optional
+    }
+    function closeCart(){
+      const modal = document.getElementById('cartModal');
+      document.getElementById('cartInner').classList.remove('open');
+      setTimeout(()=> modal.style.display='none', 220);
+    }
+
+    function renderCart(){
+      const list = document.getElementById('cartList');
+      list.innerHTML = '';
+      if(cart.length===0){
+        list.innerHTML = '<div style="padding:18px; color:var(--muted)">Tu carrito está vacío</div>';
+        document.getElementById('cartTotal').textContent = formatMoney(0);
+        return;
+      }
+
+      let total = 0;
+      cart.forEach((it, idx) => {
+        const sub = it.price * it.qty; total += sub;
+        const el = document.createElement('div');
+        el.className = 'cart-item';
+        el.innerHTML = `
+          <div class="meta">
+            <div style="font-weight:800">${it.name}</div>
+            <div style="color:var(--muted); font-size:0.92rem">S/${it.price.toFixed(2)} x ${it.qty} = ${formatMoney(sub)}</div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end">
+            <div class="qty-controls">
+              <button class="qty-btn" onclick="changeQty(${idx}, -1)">➖</button>
+              <div style="padding:6px 10px; min-width:36px; text-align:center; border-radius:8px; background:rgba(255,255,255,0.02)">${it.qty}</div>
+              <button class="qty-btn" onclick="changeQty(${idx}, 1)">➕</button>
+            </div>
+            <button class="remove-small" onclick="removeItem(${idx})">Eliminar</button>
+          </div>
+        `;
+        list.appendChild(el);
+      });
+      document.getElementById('cartTotal').textContent = formatMoney(total);
+    }
+
+    function changeQty(index, delta){
+      if(!cart[index]) return;
+      cart[index].qty += delta;
+      if(cart[index].qty <= 0) cart.splice(index,1);
+      renderCart(); updateCartCount();
+    }
+
+    function removeItem(index){
+      cart.splice(index,1);
+      renderCart(); updateCartCount();
+    }
+
+    function modalOuterClick(e){
+      // cierra si hace clic fuera del contenido
+      e.currentTarget.style.display='none';
+    }
+
+    // CHECKOUT
+    function goToCheckout(){
+      if(cart.length===0){ showNotification('Tu carrito está vacío'); return; }
+      const summary = document.getElementById('checkoutSummary');
+      let total = 0;
+      const lines = cart.map(i=>{
+        total += i.price * i.qty;
+        return `${i.name} x${i.qty} — ${formatMoney(i.price * i.qty)}`;
+      }).join('<br>');
+      summary.innerHTML = `<div style="color:var(--muted)">${lines}</div><div style="margin-top:8px; font-weight:800">Total: ${formatMoney(total)}</div>`;
+      document.getElementById('checkoutModal').style.display='flex';
+      document.getElementById('checkoutInner').classList.add('open');
+      // seleccionar tarjeta por defecto
+      setTimeout(()=> selectPM(document.querySelector('.payment-method[data-method="tarjeta"]')),40);
+    }
+
+    function closeCheckout(){
+      document.getElementById('checkoutInner').classList.remove('open');
+      setTimeout(()=> document.getElementById('checkoutModal').style.display='none', 220);
+    }
+
+    function selectPM(el){
+      document.querySelectorAll('.payment-method').forEach(pm=>{
+        pm.classList.remove('selected');
+        const extras = pm.querySelectorAll('.pm-extra');
+        extras.forEach(x=> { x.style.display = 'none'; x.style.opacity = 0; x.style.height = 0; });
+      });
+      el.classList.add('selected');
+      const extra = el.querySelector('.pm-extra');
+      if(extra){
+        extra.style.display = 'block';
+        setTimeout(()=>{ extra.style.opacity = 1; extra.style.height = 'auto'; }, 40);
+      }
+    }
+
+    // procesar pago (simulado) con animación de éxito
+    function processPayment(){
+      const name = document.getElementById('buyerName').value.trim();
+      const email = document.getElementById('buyerEmail').value.trim();
+      if(!name || !email){ alert('Completa nombre y email'); return; }
+      const pm = document.querySelector('.payment-method.selected');
+      const method = pm ? pm.getAttribute('data-method') : 'tarjeta';
+
+      if(method === 'yape'){
+        const ynum = document.getElementById('yapeNumber').value.trim();
+        if(!ynum){ alert('Ingresa número de Yape'); return; }
+      } else if(method === 'plin'){
+        const pnum = document.getElementById('plinNumber').value.trim();
+        if(!pnum){ alert('Ingresa número de Plin'); return; }
+      } else {
+        const cn = document.getElementById('cardNumber').value.trim();
+        const exp = document.getElementById('cardExp').value.trim();
+        const cvv = document.getElementById('cardCvv').value.trim();
+        if(!cn || !exp || !cvv){ alert('Completa datos de tarjeta'); return; }
+      }
+
+      // animación: mostrar caja de éxito
+      const result = document.getElementById('checkoutResult');
+      result.innerHTML = `
+        <div class="success-box" id="successBox">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" style="flex:0 0 56px">
+            <rect x="0.5" y="0.5" width="23" height="23" rx="8" fill="white" fill-opacity="0.06"/>
+            <path d="M6 12.2l3.2 3L18 6.4" stroke="#38b784" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div>
+            <div style="font-weight:900">✅ Pago procesado</div>
+            <div style="color:var(--muted); margin-top:6px">Gracias ${name}. Recibirás la confirmación al email ${email}.</div>
+          </div>
+        </div>
+      `;
+      // limpiar carrito y contador
+      cart = []; updateCartCount(); renderCart();
+      // cerrar automáticamente con ligera pausa para que el usuario vea la animación
+      setTimeout(()=> { closeCheckout(); closeCart(); result.innerHTML=''; }, 1600);
+    }
+
+    // formato y validaciones UX
+    document.addEventListener('input', (e)=>{
+      if(!e.target) return;
+      if(e.target.id === 'cardNumber'){
+        let v = e.target.value.replace(/\D/g,'').slice(0,16);
+        e.target.value = v.match(/.{1,4}/g)?.join(' ') || v;
+      }
+      if(e.target.id === 'cardExp'){
+        let v = e.target.value.replace(/\D/g,'').slice(0,4);
+        if(v.length >= 3) e.target.value = v.slice(0,2) + '/' + v.slice(2);
+        else e.target.value = v;
+      }
+      if(e.target.id === 'yapeNumber' || e.target.id === 'plinNumber'){
+        e.target.value = e.target.value.replace(/[^\d\s]/g,'').slice(0,12);
+      }
+    });
+
+    document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape'){ closeCart(); closeCheckout(); } });
+
+    // ensure pm extras initial state
+    document.addEventListener('DOMContentLoaded', ()=>{
+      document.querySelectorAll('.payment-method').forEach(pm=>{
+        const method = pm.getAttribute('data-method');
+        const extra = pm.querySelector('.pm-extra');
+        if(extra){
+          if(method === 'tarjeta') { extra.style.display='block'; extra.style.opacity=1; }
+          else { extra.style.display='none'; extra.style.opacity=0; }
+        }
+      });
+    });
+
+  </script>
+</body>
+</html>
